@@ -194,17 +194,7 @@
           ">`
       : "";
 
-    const hintHTML = showHint
-      ? `<div style="
-            position:absolute;
-            left:50%;
-            bottom:6vh;
-            transform:translateX(-50%);
-            color:#ffffff;
-            font-size:22px;
-            white-space:nowrap;
-          ">J = 不变　　F = 改变</div>`
-      : "";
+    const hintHTML = ""; // 全程不显示 J/F 提示
 
     return `
       <div style="
@@ -664,14 +654,19 @@
   }
 
   // =========================================================
-  // 练习反馈
+  // 练习反馈（只在练习阶段出现）
   // =========================================================
   function makePracticeFeedbackTrial() {
     return {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: () => {
         const lastProbe = jsPsych.data.get().filter({ screen: "probe" }).last(1).values()[0];
-        const isCorrect = lastProbe && Number(lastProbe.acc) === 1;
+
+        if (!lastProbe || !lastProbe.isPractice) {
+          return `<div style="font-size:1px; color:transparent;"> </div>`;
+        }
+
+        const isCorrect = Number(lastProbe.acc) === 1;
 
         return `
           <div style="
@@ -766,7 +761,7 @@
   }
 
   // =========================================================
-  // 正式 block
+  // 正式 block（不加练习反馈）
   // =========================================================
   function formalBlockNode(cond, blockIndexWithinCondition, isLastOverall) {
     const cfg = getConditionConfig(cond);
