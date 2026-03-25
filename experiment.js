@@ -162,38 +162,59 @@
   }
 
   function makeImageStage(leftSrc = null, rightSrc = null, showHint = false) {
-    const size = getStimSizePx();
-    const leftHTML = leftSrc
-      ? `<img class="stim-item" src="${leftSrc}" style="left:${POS_L_X * 100}%; top:${POS_Y * 100}%; width:${size}px; height:${size}px;">`
-      : "";
-    const rightHTML = rightSrc
-      ? `<img class="stim-item" src="${rightSrc}" style="left:${POS_R_X * 100}%; top:${POS_Y * 100}%; width:${size}px; height:${size}px;">`
-      : "";
-    const hintHTML = showHint
-      ? `<div style="
-            position:absolute;
-            left:50%;
-            bottom:6vh;
-            transform:translateX(-50%);
-            color:#ffffff;
-            font-size:22px;
-            white-space:nowrap;
-          ">J = 不变　　F = 改变</div>`
-      : "";
+  const size = getStimSizePx();
 
-    return `
-      <div style="
-        position:relative;
-        width:100vw;
-        height:100vh;
-        background:rgb(128,128,128);
-        overflow:hidden;">
-        ${leftHTML}
-        ${rightHTML}
-        ${hintHTML}
-      </div>
-    `;
-  }
+  const leftHTML = leftSrc
+    ? `<img src="${leftSrc}" style="
+          position:absolute;
+          left:${POS_L_X * 100}%;
+          top:${POS_Y * 100}%;
+          transform:translate(-50%, -50%);
+          width:${size}px;
+          height:${size}px;
+          object-fit:contain;
+          display:block;
+        ">`
+    : "";
+
+  const rightHTML = rightSrc
+    ? `<img src="${rightSrc}" style="
+          position:absolute;
+          left:${POS_R_X * 100}%;
+          top:${POS_Y * 100}%;
+          transform:translate(-50%, -50%);
+          width:${size}px;
+          height:${size}px;
+          object-fit:contain;
+          display:block;
+        ">`
+    : "";
+
+  const hintHTML = showHint
+    ? `<div style="
+          position:absolute;
+          left:50%;
+          bottom:6vh;
+          transform:translateX(-50%);
+          color:#ffffff;
+          font-size:22px;
+          white-space:nowrap;
+        ">J = 不变　　F = 改变</div>`
+    : "";
+
+  return `
+    <div style="
+      position:relative;
+      width:100vw;
+      height:100vh;
+      background:rgb(128,128,128);
+      overflow:hidden;">
+      ${leftHTML}
+      ${rightHTML}
+      ${hintHTML}
+    </div>
+  `;
+}
 
   function makeFixationHTML() {
     return `
@@ -516,172 +537,140 @@ function preloadNode() {
   // 单试次 timeline
   // =========================================================
   function makeSingleTrialTimeline(trialVars) {
-    const conditionConfig = getConditionConfig(trialVars.conditionCode);
+  const conditionConfig = getConditionConfig(trialVars.conditionCode);
 
-    return {
-      timeline: [
-        // 1. 注视点
-        {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: makeFixationHTML(),
-          choices: "NO_KEYS",
-          trial_duration: FIX_DUR,
-          data: { screen: "fixation" }
-        },
+  return {
+    timeline: [
+      // 1. 注视点
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: makeFixationHTML(),
+        choices: "NO_KEYS",
+        trial_duration: FIX_DUR,
+        data: { screen: "fixation" }
+      },
 
-        // 2. 记忆阵列
-        {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: () => makeImageStage(
-            jsPsych.timelineVariable("memL"),
-            jsPsych.timelineVariable("memR")
-          ),
-          choices: "NO_KEYS",
-          trial_duration: MEM_DUR,
-          data: { screen: "memory" }
-        },
+      // 2. 记忆阵列
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: () => makeImageStage(
+          trialVars.memL,
+          trialVars.memR,
+          false
+        ),
+        choices: "NO_KEYS",
+        trial_duration: MEM_DUR,
+        data: { screen: "memory" }
+      },
 
-        // 3. 间隔屏
-        {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: () => makeTypingHTML(conditionConfig.intervalType === "typing"),
-          choices: "NO_KEYS",
-          trial_duration: jsPsych.timelineVariable("intervalDur"),
-          on_load: () => {
-            if (conditionConfig.intervalType === "typing") {
-              let dots = 1;
-              const el = document.getElementById("typing-dots");
-              window.__typingTimer = setInterval(() => {
-                dots = dots % 3 + 1;
-                if (el) el.textContent = ".".repeat(dots);
-              }, 300);
-            }
-          },
-          on_finish: () => {
-            if (window.__typingTimer) {
-              clearInterval(window.__typingTimer);
-              window.__typingTimer = null;
-            }
-          },
-          data: { screen: "interval" }
-        },
-
-        // 4. cue 屏（SOA）
-        {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: () => makeImageStage(
-            jsPsych.timelineVariable("cueLeft"),
-            jsPsych.timelineVariable("cueRight")
-          ),
-          choices: "NO_KEYS",
-          trial_duration: jsPsych.timelineVariable("soa"),
-          data: { screen: "cue" }
-        },
-
-        // 5. probe
-        {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: () => makeImageStage(
-    jsPsych.timelineVariable("probeLeft"),
-    jsPsych.timelineVariable("probeRight"),
-    !jsPsych.timelineVariable("isPractice")
-  ),
-          choices: [SAME_KEY, CHANGE_KEY],
-          trial_duration: 3000,
-          response_ends_trial: true,
-          on_finish: (data) => {
-            const trialInfo = trialVars;
-            const correctKey = trialInfo.ischange === "nochange" ? SAME_KEY : CHANGE_KEY;
-
-            data.acc = data.response === correctKey ? 1 : 0;
-            data.correctKey = correctKey;
-            data.respKey = data.response || "";
-            STATE.globalTrialCounter += 1;
-            data.globalTrial = STATE.globalTrialCounter;
-
-            data.name = STATE.subject.name;
-            data.birthdate = STATE.subject.birthdate;
-            data.gender = STATE.subject.gender;
-            data.handedness = STATE.subject.handedness;
-
-            data.block = trialInfo.block;
-            data.isPractice = trialInfo.isPractice;
-            data.condition = trialInfo.condition;
-            data.conditionCode = trialInfo.conditionCode;
-            data.formalBlockIndex = trialInfo.formalBlockIndex;
-            data.validity = trialInfo.validity;
-            data.cueSide = trialInfo.cueSide;
-            data.probeSide = trialInfo.probeSide;
-            data.ischange = trialInfo.ischange;
-            data.memL = trialInfo.memL;
-            data.memR = trialInfo.memR;
-            data.emoji_fn = trialInfo.emoji_fn;
-            data.stim_fn = trialInfo.stim_fn;
-            data.probeStim = trialInfo.probeStim;
-            data.soa = trialInfo.soa;
-            data.intervalDur = trialInfo.intervalDur;
-          },
-          data: {
-            screen: "probe"
+      // 3. 间隔屏
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: () => makeTypingHTML(conditionConfig.intervalType === "typing"),
+        choices: "NO_KEYS",
+        trial_duration: trialVars.intervalDur,
+        on_load: () => {
+          if (conditionConfig.intervalType === "typing") {
+            let dots = 1;
+            const el = document.getElementById("typing-dots");
+            window.__typingTimer = setInterval(() => {
+              dots = dots % 3 + 1;
+              if (el) el.textContent = ".".repeat(dots);
+            }, 300);
           }
         },
+        on_finish: () => {
+          if (window.__typingTimer) {
+            clearInterval(window.__typingTimer);
+            window.__typingTimer = null;
+          }
+        },
+        data: { screen: "interval" }
+      },
 
-        // 6. 记录 block 内 trial 序号
-{
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: () => {
-    const last = jsPsych.data.get().last(1).values()[0];
-    if (last && last.screen === "probe") {
-      const sameBlockRows = jsPsych.data.get().filter({
-        screen: "probe",
-        block: last.block
-      }).values();
-      last.trial = sameBlockRows.length;
-    }
-    return `<div style="font-size:1px; color:transparent;"> </div>`;
-  },
-  choices: "NO_KEYS",
-  trial_duration: 10,
-  data: {
-    screen: "trial_index_update"
-  }
+      // 4. cue 屏（SOA）
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: () => makeImageStage(
+          trialVars.cueLeft,
+          trialVars.cueRight,
+          false
+        ),
+        choices: "NO_KEYS",
+        trial_duration: trialVars.soa,
+        data: { screen: "cue" }
+      },
+
+      // 5. probe
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: () => makeImageStage(
+          trialVars.probeLeft,
+          trialVars.probeRight,
+          !trialVars.isPractice
+        ),
+        choices: [SAME_KEY, CHANGE_KEY],
+        trial_duration: 3000,
+        response_ends_trial: true,
+        on_finish: (data) => {
+          const correctKey = trialVars.ischange === "nochange" ? SAME_KEY : CHANGE_KEY;
+
+          data.acc = data.response === correctKey ? 1 : 0;
+          data.correctKey = correctKey;
+          data.respKey = data.response || "";
+          STATE.globalTrialCounter += 1;
+          data.globalTrial = STATE.globalTrialCounter;
+
+          data.name = STATE.subject.name;
+          data.birthdate = STATE.subject.birthdate;
+          data.gender = STATE.subject.gender;
+          data.handedness = STATE.subject.handedness;
+
+          data.block = trialVars.block;
+          data.isPractice = trialVars.isPractice;
+          data.condition = trialVars.condition;
+          data.conditionCode = trialVars.conditionCode;
+          data.formalBlockIndex = trialVars.formalBlockIndex;
+          data.validity = trialVars.validity;
+          data.cueSide = trialVars.cueSide;
+          data.probeSide = trialVars.probeSide;
+          data.ischange = trialVars.ischange;
+          data.memL = trialVars.memL;
+          data.memR = trialVars.memR;
+          data.emoji_fn = trialVars.emoji_fn;
+          data.stim_fn = trialVars.stim_fn;
+          data.probeStim = trialVars.probeStim;
+          data.soa = trialVars.soa;
+          data.intervalDur = trialVars.intervalDur;
+        },
+        data: {
+          screen: "probe"
+        }
+      },
+
+      // 6. 记录 block 内 trial 序号
+      {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: () => {
+          const last = jsPsych.data.get().last(1).values()[0];
+          if (last && last.screen === "probe") {
+            const sameBlockRows = jsPsych.data.get().filter({
+              screen: "probe",
+              block: last.block
+            }).values();
+            last.trial = sameBlockRows.length;
+          }
+          return `<div style="font-size:1px; color:transparent;"> </div>`;
+        },
+        choices: "NO_KEYS",
+        trial_duration: 10,
+        data: {
+          screen: "trial_index_update"
+        }
+      }
+    ]
+  };
 }
-      ],
-      timeline_variables: [trialVars]
-    };
-  }
-
-  function makePracticeFeedbackTrial() {
-  return {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: () => {
-      const last = jsPsych.data.get().last(1).values()[0];
-      const ok = Number(last.acc) === 1;
-
-      return `
-        <div style="
-          width: 100vw;
-          height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgb(128,128,128);
-          color: white;
-          font-size: 42px;
-          font-family: 'Microsoft YaHei UI','Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;
-          text-align: center;
-        ">
-          ${ok ? "恭喜你答对了！" : "回答错误！"}
-        </div>
-      `;
-    },
-    choices: "NO_KEYS",
-    trial_duration: 800,
-    data: {
-      screen: "practice_feedback"
-     }
-    };
-  }
   // =========================================================
   // 练习
   // =========================================================
