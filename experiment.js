@@ -245,17 +245,37 @@
   }
 
   function imagePage(file) {
-    return {
-      type: jsPsychImageKeyboardResponse,
-      stimulus: file,
-      choices: [NEXT_KEY],
-      render_on_canvas: false,
-      stimulus_height: window.innerHeight,
-      stimulus_width: window.innerWidth,
-      maintain_aspect_ratio: true,
-      post_trial_gap: 0
-    };
-  }
+  return {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `
+      <div style="
+        position:fixed;
+        inset:0;
+        width:100vw;
+        height:100vh;
+        margin:0;
+        padding:0;
+        background:rgb(128,128,128);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        overflow:hidden;
+      ">
+        <img src="${file}" style="
+          width:100vw;
+          height:100vh;
+          object-fit:contain;
+          display:block;
+          margin:0;
+          padding:0;
+          background:rgb(128,128,128);
+        ">
+      </div>
+    `,
+    choices: [NEXT_KEY],
+    post_trial_gap: 0
+  };
+}
 
   function fullscreenNode() {
     return {
@@ -327,14 +347,21 @@
     };
   }
 
-  function preloadNode(allAssets) {
-    return {
-      type: jsPsychPreload,
-      images: allAssets,
-      max_load_time: 120000,
-      continue_after_error: true
-    };
-  }
+function preloadNode() {
+  return {
+    type: jsPsychPreload,
+    images: [
+      ...Object.values(INSTRUCTION),
+      ...MEM_POOL,
+      ...EMOJI_POOL,
+      ...COMPLEX_POOL
+    ],
+    max_load_time: 120000,
+    continue_after_error: false,
+    show_progress_bar: true,
+    show_detailed_errors: true
+  };
+}
 
   function connectingPageNode() {
     return {
@@ -553,12 +580,12 @@
 
         // 5. probe
         {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: () => makeImageStage(
-            jsPsych.timelineVariable("probeLeft"),
-            jsPsych.timelineVariable("probeRight"),
-            true
-          ),
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: () => makeImageStage(
+    jsPsych.timelineVariable("probeLeft"),
+    jsPsych.timelineVariable("probeRight"),
+    !jsPsych.timelineVariable("isPractice")
+  ),
           choices: [SAME_KEY, CHANGE_KEY],
           trial_duration: 3000,
           response_ends_trial: true,
@@ -844,7 +871,7 @@
 
   const timeline = [];
   timeline.push(fullscreenNode());
-  timeline.push(preloadNode(allAssets));
+  timeline.push(preloadNode());
   timeline.push(demographicsNode());
   timeline.push(imagePage(INSTRUCTION.welcome));
 
