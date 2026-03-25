@@ -24,7 +24,7 @@
   const CONNECT_MIN = 3000;
   const CONNECT_MAX = 8000;
 
-  // 练习阶段不操纵 SOA，固定 550ms，如果删除或者增加，直接在这里就行
+  // 练习阶段不操纵 SOA，固定 550ms
   const PRACTICE_SOA = 550;
   const FORMAL_SOA_LEVELS = [200, 550, 1000];
 
@@ -92,6 +92,10 @@
   // =========================================================
   document.body.style.background = "rgb(128,128,128)";
   document.documentElement.style.background = "rgb(128,128,128)";
+  document.body.style.margin = "0";
+  document.documentElement.style.margin = "0";
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.overflow = "hidden";
 
   // =========================================================
   // 初始化
@@ -162,59 +166,59 @@
   }
 
   function makeImageStage(leftSrc = null, rightSrc = null, showHint = false) {
-  const size = getStimSizePx();
+    const size = getStimSizePx();
 
-  const leftHTML = leftSrc
-    ? `<img src="${leftSrc}" style="
-          position:absolute;
-          left:${POS_L_X * 100}%;
-          top:${POS_Y * 100}%;
-          transform:translate(-50%, -50%);
-          width:${size}px;
-          height:${size}px;
-          object-fit:contain;
-          display:block;
-        ">`
-    : "";
+    const leftHTML = leftSrc
+      ? `<img src="${leftSrc}" style="
+            position:absolute;
+            left:${POS_L_X * 100}%;
+            top:${POS_Y * 100}%;
+            transform:translate(-50%, -50%);
+            width:${size}px;
+            height:${size}px;
+            object-fit:contain;
+            display:block;
+          ">`
+      : "";
 
-  const rightHTML = rightSrc
-    ? `<img src="${rightSrc}" style="
-          position:absolute;
-          left:${POS_R_X * 100}%;
-          top:${POS_Y * 100}%;
-          transform:translate(-50%, -50%);
-          width:${size}px;
-          height:${size}px;
-          object-fit:contain;
-          display:block;
-        ">`
-    : "";
+    const rightHTML = rightSrc
+      ? `<img src="${rightSrc}" style="
+            position:absolute;
+            left:${POS_R_X * 100}%;
+            top:${POS_Y * 100}%;
+            transform:translate(-50%, -50%);
+            width:${size}px;
+            height:${size}px;
+            object-fit:contain;
+            display:block;
+          ">`
+      : "";
 
-  const hintHTML = showHint
-    ? `<div style="
-          position:absolute;
-          left:50%;
-          bottom:6vh;
-          transform:translateX(-50%);
-          color:#ffffff;
-          font-size:22px;
-          white-space:nowrap;
-        ">J = 不变　　F = 改变</div>`
-    : "";
+    const hintHTML = showHint
+      ? `<div style="
+            position:absolute;
+            left:50%;
+            bottom:6vh;
+            transform:translateX(-50%);
+            color:#ffffff;
+            font-size:22px;
+            white-space:nowrap;
+          ">J = 不变　　F = 改变</div>`
+      : "";
 
-  return `
-    <div style="
-      position:relative;
-      width:100vw;
-      height:100vh;
-      background:rgb(128,128,128);
-      overflow:hidden;">
-      ${leftHTML}
-      ${rightHTML}
-      ${hintHTML}
-    </div>
-  `;
-}
+    return `
+      <div style="
+        position:relative;
+        width:100vw;
+        height:100vh;
+        background:rgb(128,128,128);
+        overflow:hidden;">
+        ${leftHTML}
+        ${rightHTML}
+        ${hintHTML}
+      </div>
+    `;
+  }
 
   function makeFixationHTML() {
     return `
@@ -266,37 +270,37 @@
   }
 
   function imagePage(file) {
-  return {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `
-      <div style="
-        position:fixed;
-        inset:0;
-        width:100vw;
-        height:100vh;
-        margin:0;
-        padding:0;
-        background:rgb(128,128,128);
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        overflow:hidden;
-      ">
-        <img src="${file}" style="
+    return {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: `
+        <div style="
+          position:fixed;
+          inset:0;
           width:100vw;
           height:100vh;
-          object-fit:contain;
-          display:block;
           margin:0;
           padding:0;
           background:rgb(128,128,128);
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          overflow:hidden;
         ">
-      </div>
-    `,
-    choices: [NEXT_KEY],
-    post_trial_gap: 0
-  };
-}
+          <img src="${file}" style="
+            width:100vw;
+            height:100vh;
+            object-fit:contain;
+            display:block;
+            margin:0;
+            padding:0;
+            background:rgb(128,128,128);
+          ">
+        </div>
+      `,
+      choices: [NEXT_KEY],
+      post_trial_gap: 0
+    };
+  }
 
   function fullscreenNode() {
     return {
@@ -368,21 +372,21 @@
     };
   }
 
-function preloadNode() {
-  return {
-    type: jsPsychPreload,
-    images: [
-      ...Object.values(INSTRUCTION),
-      ...MEM_POOL,
-      ...EMOJI_POOL,
-      ...COMPLEX_POOL
-    ],
-    max_load_time: 120000,
-    continue_after_error: false,
-    show_progress_bar: true,
-    show_detailed_errors: true
-  };
-}
+  function preloadNode() {
+    return {
+      type: jsPsychPreload,
+      images: [
+        ...Object.values(INSTRUCTION),
+        ...MEM_POOL,
+        ...EMOJI_POOL,
+        ...COMPLEX_POOL
+      ],
+      max_load_time: 120000,
+      continue_after_error: false,
+      show_progress_bar: true,
+      show_detailed_errors: true
+    };
+  }
 
   function connectingPageNode() {
     return {
@@ -451,226 +455,247 @@ function preloadNode() {
   // 试次生成
   // =========================================================
   function buildTrials({
-  conditionCode,
-  isPractice,
-  nTrials,
-  blockName,
-  formalBlockIndex = null
-}) {
-  let soaList = [];
-  if (isPractice) {
-    soaList = Array(nTrials).fill(PRACTICE_SOA);
-  } else {
-    const repeats = nTrials / FORMAL_SOA_LEVELS.length; // 60/3=20
-    soaList = shuffle(repeatItems(FORMAL_SOA_LEVELS, repeats));
-  }
-
-  const validityRatio = isPractice ? VALID_RATIO_PRACTICE : VALID_RATIO_FORMAL;
-  const validityList = choiceWeighted(nTrials, validityRatio, "valid", "invalid");
-  const changeList = choiceWeighted(nTrials, CHANGE_RATIO, "change", "nochange");
-
-  const out = [];
-
-  for (let i = 0; i < nTrials; i++) {
-    // 记忆刺激：左右各一个，不重复
-    const [memL, memR] = sampleWithoutReplacement(MEM_POOL, 2);
-
-    // 本 trial 抽 1 个 emoji、1 个 complex
-    const emoji_fn = sampleOne(EMOJI_POOL);
-    const stim_fn = sampleOne(COMPLEX_POOL);
-
-    // emoji 左右随机；complex 在另一边
-    const emojiSide = Math.random() < 0.5 ? "left" : "right";
-    const complexSide = emojiSide === "left" ? "right" : "left";
-
-    // validity：probe 在 emoji 那边 = valid；另一边 = invalid
-    const validity = validityList[i];
-    const probeSide = validity === "valid" ? emojiSide : complexSide;
-
-    // change / nochange
-    const ischange = changeList[i];
-
-    let probeStim;
-    if (ischange === "nochange") {
-      probeStim = probeSide === "left" ? memL : memR;
+    conditionCode,
+    isPractice,
+    nTrials,
+    blockName,
+    formalBlockIndex = null
+  }) {
+    let soaList = [];
+    if (isPractice) {
+      soaList = Array(nTrials).fill(PRACTICE_SOA);
     } else {
-      const candidates = MEM_POOL.filter(x => x !== memL && x !== memR);
-      probeStim = sampleOne(candidates);
+      const repeats = nTrials / FORMAL_SOA_LEVELS.length;
+      soaList = shuffle(repeatItems(FORMAL_SOA_LEVELS, repeats));
     }
 
-    // cue 屏左右真正呈现的内容
-    const cueLeft = emojiSide === "left" ? emoji_fn : stim_fn;
-    const cueRight = emojiSide === "right" ? emoji_fn : stim_fn;
+    const validityRatio = isPractice ? VALID_RATIO_PRACTICE : VALID_RATIO_FORMAL;
+    const validityList = choiceWeighted(nTrials, validityRatio, "valid", "invalid");
+    const changeList = choiceWeighted(nTrials, CHANGE_RATIO, "change", "nochange");
 
-    // probe 屏左右真正呈现的位置
-    const probeLeft = probeSide === "left" ? probeStim : null;
-    const probeRight = probeSide === "right" ? probeStim : null;
+    const out = [];
 
-    out.push({
-      conditionCode,
-      condition: getConditionConfig(conditionCode).label,
-      block: blockName,
-      formalBlockIndex,
-      isPractice,
-      soa: soaList[i],
-      validity,
-      cueSide: emojiSide,      // 这里记录的是 emoji 在哪边
-      probeSide,
-      ischange,
-      memL,
-      memR,
-      emoji_fn,
-      stim_fn,
-      cueLeft,
-      cueRight,
-      probeLeft,
-      probeRight,
-      probeStim,
-      intervalDur: randInt(INTERVAL_MIN, INTERVAL_MAX)
-    });
+    for (let i = 0; i < nTrials; i++) {
+      const [memL, memR] = sampleWithoutReplacement(MEM_POOL, 2);
+
+      const emoji_fn = sampleOne(EMOJI_POOL);
+      const stim_fn = sampleOne(COMPLEX_POOL);
+
+      const emojiSide = Math.random() < 0.5 ? "left" : "right";
+      const complexSide = emojiSide === "left" ? "right" : "left";
+
+      const validity = validityList[i];
+      const probeSide = validity === "valid" ? emojiSide : complexSide;
+
+      const ischange = changeList[i];
+
+      let probeStim;
+      if (ischange === "nochange") {
+        probeStim = probeSide === "left" ? memL : memR;
+      } else {
+        const candidates = MEM_POOL.filter(x => x !== memL && x !== memR);
+        probeStim = sampleOne(candidates);
+      }
+
+      const cueLeft = emojiSide === "left" ? emoji_fn : stim_fn;
+      const cueRight = emojiSide === "right" ? emoji_fn : stim_fn;
+
+      const probeLeft = probeSide === "left" ? probeStim : null;
+      const probeRight = probeSide === "right" ? probeStim : null;
+
+      out.push({
+        conditionCode,
+        condition: getConditionConfig(conditionCode).label,
+        block: blockName,
+        formalBlockIndex,
+        isPractice,
+        soa: soaList[i],
+        validity,
+        cueSide: emojiSide,
+        probeSide,
+        ischange,
+        memL,
+        memR,
+        emoji_fn,
+        stim_fn,
+        cueLeft,
+        cueRight,
+        probeLeft,
+        probeRight,
+        probeStim,
+        intervalDur: randInt(INTERVAL_MIN, INTERVAL_MAX)
+      });
+    }
+
+    return out;
   }
-
-  return out;
-}
 
   // =========================================================
   // 单试次 timeline
   // =========================================================
   function makeSingleTrialTimeline(trialVars) {
-  const conditionConfig = getConditionConfig(trialVars.conditionCode);
+    const conditionConfig = getConditionConfig(trialVars.conditionCode);
 
-  return {
-    timeline: [
-      // 1. 注视点
-      {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: makeFixationHTML(),
-        choices: "NO_KEYS",
-        trial_duration: FIX_DUR,
-        data: { screen: "fixation" }
-      },
+    return {
+      timeline: [
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: makeFixationHTML(),
+          choices: "NO_KEYS",
+          trial_duration: FIX_DUR,
+          data: { screen: "fixation" }
+        },
 
-      // 2. 记忆阵列
-      {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => makeImageStage(
-          trialVars.memL,
-          trialVars.memR,
-          false
-        ),
-        choices: "NO_KEYS",
-        trial_duration: MEM_DUR,
-        data: { screen: "memory" }
-      },
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: () => makeImageStage(
+            trialVars.memL,
+            trialVars.memR,
+            false
+          ),
+          choices: "NO_KEYS",
+          trial_duration: MEM_DUR,
+          data: { screen: "memory" }
+        },
 
-      // 3. 间隔屏
-      {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => makeTypingHTML(conditionConfig.intervalType === "typing"),
-        choices: "NO_KEYS",
-        trial_duration: trialVars.intervalDur,
-        on_load: () => {
-          if (conditionConfig.intervalType === "typing") {
-            let dots = 1;
-            const el = document.getElementById("typing-dots");
-            window.__typingTimer = setInterval(() => {
-              dots = dots % 3 + 1;
-              if (el) el.textContent = ".".repeat(dots);
-            }, 300);
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: () => makeTypingHTML(conditionConfig.intervalType === "typing"),
+          choices: "NO_KEYS",
+          trial_duration: trialVars.intervalDur,
+          on_load: () => {
+            if (conditionConfig.intervalType === "typing") {
+              let dots = 1;
+              const el = document.getElementById("typing-dots");
+              window.__typingTimer = setInterval(() => {
+                dots = dots % 3 + 1;
+                if (el) el.textContent = ".".repeat(dots);
+              }, 300);
+            }
+          },
+          on_finish: () => {
+            if (window.__typingTimer) {
+              clearInterval(window.__typingTimer);
+              window.__typingTimer = null;
+            }
+          },
+          data: { screen: "interval" }
+        },
+
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: () => makeImageStage(
+            trialVars.cueLeft,
+            trialVars.cueRight,
+            false
+          ),
+          choices: "NO_KEYS",
+          trial_duration: trialVars.soa,
+          data: { screen: "cue" }
+        },
+
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: () => makeImageStage(
+            trialVars.probeLeft,
+            trialVars.probeRight,
+            !trialVars.isPractice
+          ),
+          choices: [SAME_KEY, CHANGE_KEY],
+          trial_duration: 3000,
+          response_ends_trial: true,
+          on_finish: (data) => {
+            const correctKey = trialVars.ischange === "nochange" ? SAME_KEY : CHANGE_KEY;
+
+            data.acc = data.response === correctKey ? 1 : 0;
+            data.correctKey = correctKey;
+            data.respKey = data.response || "";
+            STATE.globalTrialCounter += 1;
+            data.globalTrial = STATE.globalTrialCounter;
+
+            data.name = STATE.subject.name;
+            data.birthdate = STATE.subject.birthdate;
+            data.gender = STATE.subject.gender;
+            data.handedness = STATE.subject.handedness;
+
+            data.block = trialVars.block;
+            data.isPractice = trialVars.isPractice;
+            data.condition = trialVars.condition;
+            data.conditionCode = trialVars.conditionCode;
+            data.formalBlockIndex = trialVars.formalBlockIndex;
+            data.validity = trialVars.validity;
+            data.cueSide = trialVars.cueSide;
+            data.probeSide = trialVars.probeSide;
+            data.ischange = trialVars.ischange;
+            data.memL = trialVars.memL;
+            data.memR = trialVars.memR;
+            data.emoji_fn = trialVars.emoji_fn;
+            data.stim_fn = trialVars.stim_fn;
+            data.probeStim = trialVars.probeStim;
+            data.soa = trialVars.soa;
+            data.intervalDur = trialVars.intervalDur;
+          },
+          data: {
+            screen: "probe"
           }
         },
-        on_finish: () => {
-          if (window.__typingTimer) {
-            clearInterval(window.__typingTimer);
-            window.__typingTimer = null;
+
+        {
+          type: jsPsychHtmlKeyboardResponse,
+          stimulus: () => {
+            const last = jsPsych.data.get().last(1).values()[0];
+            if (last && last.screen === "probe") {
+              const sameBlockRows = jsPsych.data.get().filter({
+                screen: "probe",
+                block: last.block
+              }).values();
+              last.trial = sameBlockRows.length;
+            }
+            return `<div style="font-size:1px; color:transparent;"> </div>`;
+          },
+          choices: "NO_KEYS",
+          trial_duration: 10,
+          data: {
+            screen: "trial_index_update"
           }
-        },
-        data: { screen: "interval" }
-      },
-
-      // 4. cue 屏（SOA）
-      {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => makeImageStage(
-          trialVars.cueLeft,
-          trialVars.cueRight,
-          false
-        ),
-        choices: "NO_KEYS",
-        trial_duration: trialVars.soa,
-        data: { screen: "cue" }
-      },
-
-      // 5. probe
-      {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => makeImageStage(
-          trialVars.probeLeft,
-          trialVars.probeRight,
-          !trialVars.isPractice
-        ),
-        choices: [SAME_KEY, CHANGE_KEY],
-        trial_duration: 3000,
-        response_ends_trial: true,
-        on_finish: (data) => {
-          const correctKey = trialVars.ischange === "nochange" ? SAME_KEY : CHANGE_KEY;
-
-          data.acc = data.response === correctKey ? 1 : 0;
-          data.correctKey = correctKey;
-          data.respKey = data.response || "";
-          STATE.globalTrialCounter += 1;
-          data.globalTrial = STATE.globalTrialCounter;
-
-          data.name = STATE.subject.name;
-          data.birthdate = STATE.subject.birthdate;
-          data.gender = STATE.subject.gender;
-          data.handedness = STATE.subject.handedness;
-
-          data.block = trialVars.block;
-          data.isPractice = trialVars.isPractice;
-          data.condition = trialVars.condition;
-          data.conditionCode = trialVars.conditionCode;
-          data.formalBlockIndex = trialVars.formalBlockIndex;
-          data.validity = trialVars.validity;
-          data.cueSide = trialVars.cueSide;
-          data.probeSide = trialVars.probeSide;
-          data.ischange = trialVars.ischange;
-          data.memL = trialVars.memL;
-          data.memR = trialVars.memR;
-          data.emoji_fn = trialVars.emoji_fn;
-          data.stim_fn = trialVars.stim_fn;
-          data.probeStim = trialVars.probeStim;
-          data.soa = trialVars.soa;
-          data.intervalDur = trialVars.intervalDur;
-        },
-        data: {
-          screen: "probe"
         }
-      },
+      ]
+    };
+  }
 
-      // 6. 记录 block 内 trial 序号
-      {
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: () => {
-          const last = jsPsych.data.get().last(1).values()[0];
-          if (last && last.screen === "probe") {
-            const sameBlockRows = jsPsych.data.get().filter({
-              screen: "probe",
-              block: last.block
-            }).values();
-            last.trial = sameBlockRows.length;
-          }
-          return `<div style="font-size:1px; color:transparent;"> </div>`;
-        },
-        choices: "NO_KEYS",
-        trial_duration: 10,
-        data: {
-          screen: "trial_index_update"
-        }
+  // =========================================================
+  // 练习反馈
+  // =========================================================
+  function makePracticeFeedbackTrial() {
+    return {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: () => {
+        const lastProbe = jsPsych.data.get().filter({ screen: "probe" }).last(1).values()[0];
+        const isCorrect = lastProbe && Number(lastProbe.acc) === 1;
+
+        return `
+          <div style="
+            width:100vw;
+            height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:rgb(128,128,128);
+            color:#ffffff;
+            font-size:40px;
+          ">
+            ${isCorrect ? "恭喜你答对了！" : "回答错误！"}
+          </div>
+        `;
+      },
+      choices: "NO_KEYS",
+      trial_duration: 800,
+      data: {
+        screen: "practice_feedback"
       }
-    ]
-  };
-}
+    };
+  }
+
   // =========================================================
   // 练习
   // =========================================================
@@ -701,26 +726,29 @@ function preloadNode() {
             ])
           },
           {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: () => {
-    const rows = jsPsych.data.get().filter({
-      screen: "probe",
-      block: blockName
-    }).values();
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: () => {
+              const rows = jsPsych.data.get().filter({
+                screen: "probe",
+                block: blockName
+              }).values();
 
-    const acc = rows.length
-      ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
-      : 0;
+              const acc = rows.length
+                ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
+                : 0;
 
-    if (acc >= PRACTICE_ACC_CRITERION) {
-      markPracticePassed(cond);
-    }
+              if (acc >= PRACTICE_ACC_CRITERION) {
+                markPracticePassed(cond);
+              }
 
-    return `<div style="font-size:1px; color:transparent;"> </div>`;
-  },
-  choices: "NO_KEYS",
-  trial_duration: 10
-}
+              return `<div style="font-size:1px; color:transparent;"> </div>`;
+            },
+            choices: "NO_KEYS",
+            trial_duration: 10,
+            data: {
+              screen: "practice_check"
+            }
+          }
         ]
       };
     };
@@ -754,12 +782,10 @@ function preloadNode() {
 
     const nodes = [];
 
-    // 有代理归因的每个正式 block 前都加“等待对方连接......”
     if (cond === "A") {
       nodes.push(connectingPageNode());
     }
 
-    // 每个条件第一次进入正式实验前，显示 formal intro
     if (blockIndexWithinCondition === 1) {
       nodes.push(imagePage(cfg.formalIntro));
     }
@@ -849,13 +875,6 @@ function preloadNode() {
   // =========================================================
   // timeline 组装
   // =========================================================
-  const allAssets = [
-    ...Object.values(INSTRUCTION),
-    ...MEM_POOL,
-    ...EMOJI_POOL,
-    ...COMPLEX_POOL
-  ];
-
   assignOrder();
 
   const timeline = [];
@@ -864,14 +883,12 @@ function preloadNode() {
   timeline.push(demographicsNode());
   timeline.push(imagePage(INSTRUCTION.welcome));
 
-  const condOrder = getConditionFirstOccurrenceOrder(); // ["A","B"] or ["B","A"]
+  const condOrder = getConditionFirstOccurrenceOrder();
 
-  // 先做第一个条件：练习 + 两个正式 block
   timeline.push(practiceLoopNode(condOrder[0]));
   timeline.push(formalBlockNode(condOrder[0], 1, false));
   timeline.push(formalBlockNode(condOrder[0], 2, false));
 
-  // 再做第二个条件：练习 + 两个正式 block
   timeline.push(practiceLoopNode(condOrder[1]));
   timeline.push(formalBlockNode(condOrder[1], 1, false));
   timeline.push(formalBlockNode(condOrder[1], 2, true));
