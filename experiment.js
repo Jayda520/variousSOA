@@ -165,7 +165,7 @@
     return Math.round(window.innerHeight * STIM_SIZE_RATIO);
   }
 
-  function makeImageStage(leftSrc = null, rightSrc = null, showHint = false) {
+  function makeImageStage(leftSrc = null, rightSrc = null) {
     const size = getStimSizePx();
 
     const leftHTML = leftSrc
@@ -194,8 +194,6 @@
           ">`
       : "";
 
-    const hintHTML = ""; // 全程不显示 J/F 提示
-
     return `
       <div style="
         position:relative;
@@ -205,7 +203,6 @@
         overflow:hidden;">
         ${leftHTML}
         ${rightHTML}
-        ${hintHTML}
       </div>
     `;
   }
@@ -540,8 +537,7 @@
           type: jsPsychHtmlKeyboardResponse,
           stimulus: () => makeImageStage(
             trialVars.memL,
-            trialVars.memR,
-            false
+            trialVars.memR
           ),
           choices: "NO_KEYS",
           trial_duration: MEM_DUR,
@@ -576,8 +572,7 @@
           type: jsPsychHtmlKeyboardResponse,
           stimulus: () => makeImageStage(
             trialVars.cueLeft,
-            trialVars.cueRight,
-            false
+            trialVars.cueRight
           ),
           choices: "NO_KEYS",
           trial_duration: trialVars.soa,
@@ -588,8 +583,7 @@
           type: jsPsychHtmlKeyboardResponse,
           stimulus: () => makeImageStage(
             trialVars.probeLeft,
-            trialVars.probeRight,
-            false
+            trialVars.probeRight
           ),
           choices: [SAME_KEY, CHANGE_KEY],
           trial_duration: 3000,
@@ -641,7 +635,7 @@
               }).values();
               last.trial = sameBlockRows.length;
             }
-            return `<div style="font-size:1px; color:transparent;"> </div>`;
+            return `<div style="font-size:1px; color:transparent;"></div>`;
           },
           choices: "NO_KEYS",
           trial_duration: 10,
@@ -663,7 +657,7 @@
         const lastProbe = jsPsych.data.get().filter({ screen: "probe" }).last(1).values()[0];
 
         if (!lastProbe || !lastProbe.isPractice) {
-          return `<div style="font-size:1px; color:transparent;"> </div>`;
+          return `<div style="font-size:1px; color:transparent;"></div>`;
         }
 
         const isCorrect = Number(lastProbe.acc) === 1;
@@ -721,35 +715,22 @@
             ])
           },
           {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: () => {
-    const rows = jsPsych.data.get().filter({
-      screen: "probe",
-      block: blockName
-    }).last(PRACTICE_TRIALS).values();
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: () => {
+              const rows = jsPsych.data.get().filter({
+                screen: "probe",
+                block: blockName
+              }).last(PRACTICE_TRIALS).values();
 
-    const acc = rows.length
-      ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
-      : 0;
-
-    if (acc >= PRACTICE_ACC_CRITERION) {
-      markPracticePassed(cond);
-    }
-
-    return `<div style="font-size:1px; color:transparent;"> </div>`;
-  },
-  choices: "NO_KEYS",
-  trial_duration: 10,
-  data: {
-    screen: "practice_check"
-  }
-}
+              const acc = rows.length
+                ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
+                : 0;
 
               if (acc >= PRACTICE_ACC_CRITERION) {
                 markPracticePassed(cond);
               }
 
-              return `<div style="font-size:1px; color:transparent;"> </div>`;
+              return `<div style="font-size:1px; color:transparent;"></div>`;
             },
             choices: "NO_KEYS",
             trial_duration: 10,
