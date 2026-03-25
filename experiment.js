@@ -600,23 +600,61 @@
         },
 
         // 6. 记录 block 内 trial 序号
-        {
-          type: jsPsychCallFunction,
-          func: () => {
-            const last = jsPsych.data.get().last(1).values()[0];
-            if (!last || last.screen !== "probe") return;
-            const sameBlockRows = jsPsych.data.get().filter({
-              screen: "probe",
-              block: last.block
-            }).values();
-            last.trial = sameBlockRows.length;
-          }
-        }
+{
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: () => {
+    const last = jsPsych.data.get().last(1).values()[0];
+    if (last && last.screen === "probe") {
+      const sameBlockRows = jsPsych.data.get().filter({
+        screen: "probe",
+        block: last.block
+      }).values();
+      last.trial = sameBlockRows.length;
+    }
+    return `<div style="font-size:1px; color:transparent;"> </div>`;
+  },
+  choices: "NO_KEYS",
+  trial_duration: 10,
+  data: {
+    screen: "trial_index_update"
+  }
+}
       ],
       timeline_variables: [trialVars]
     };
   }
 
+  function makePracticeFeedbackTrial() {
+  return {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: () => {
+      const last = jsPsych.data.get().last(1).values()[0];
+      const ok = Number(last.acc) === 1;
+
+      return `
+        <div style="
+          width: 100vw;
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgb(128,128,128);
+          color: white;
+          font-size: 42px;
+          font-family: 'Microsoft YaHei UI','Microsoft YaHei','PingFang SC','Noto Sans CJK SC',sans-serif;
+          text-align: center;
+        ">
+          ${ok ? "恭喜你答对了！" : "回答错误！"}
+        </div>
+      `;
+    },
+    choices: "NO_KEYS",
+    trial_duration: 800,
+    data: {
+      screen: "practice_feedback"
+     }
+    };
+  }
   // =========================================================
   // 练习
   // =========================================================
@@ -641,25 +679,32 @@
         timeline: [
           ...introPages,
           {
-            timeline: practiceTrials.map(tv => makeSingleTrialTimeline(tv))
+            timeline: practiceTrials.flatMap(tv => [
+              makeSingleTrialTimeline(tv),
+              makePracticeFeedbackTrial()
+            ])
           },
           {
-            type: jsPsychCallFunction,
-            func: () => {
-              const rows = jsPsych.data.get().filter({
-                screen: "probe",
-                block: blockName
-              }).values();
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: () => {
+    const rows = jsPsych.data.get().filter({
+      screen: "probe",
+      block: blockName
+    }).values();
 
-              const acc = rows.length
-                ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
-                : 0;
+    const acc = rows.length
+      ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
+      : 0;
 
-              if (acc >= PRACTICE_ACC_CRITERION) {
-                markPracticePassed(cond);
-              }
-            }
-          }
+    if (acc >= PRACTICE_ACC_CRITERION) {
+      markPracticePassed(cond);
+    }
+
+    return `<div style="font-size:1px; color:transparent;"> </div>`;
+  },
+  choices: "NO_KEYS",
+  trial_duration: 10
+}
         ]
       };
     };
