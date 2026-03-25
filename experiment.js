@@ -721,16 +721,29 @@
             ])
           },
           {
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: () => {
-              const rows = jsPsych.data.get().filter({
-                screen: "probe",
-                block: blockName
-              }).values();
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: () => {
+    const rows = jsPsych.data.get().filter({
+      screen: "probe",
+      block: blockName
+    }).last(PRACTICE_TRIALS).values();
 
-              const acc = rows.length
-                ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
-                : 0;
+    const acc = rows.length
+      ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
+      : 0;
+
+    if (acc >= PRACTICE_ACC_CRITERION) {
+      markPracticePassed(cond);
+    }
+
+    return `<div style="font-size:1px; color:transparent;"> </div>`;
+  },
+  choices: "NO_KEYS",
+  trial_duration: 10,
+  data: {
+    screen: "practice_check"
+  }
+}
 
               if (acc >= PRACTICE_ACC_CRITERION) {
                 markPracticePassed(cond);
