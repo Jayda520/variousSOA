@@ -599,7 +599,7 @@
           stimulus: () => makeImageStage(
             trialVars.probeLeft,
             trialVars.probeRight,
-            !trialVars.isPractice
+            false
           ),
           choices: [SAME_KEY, CHANGE_KEY],
           trial_duration: 3000,
