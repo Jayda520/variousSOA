@@ -771,12 +771,12 @@
 
     const nodes = [];
 
-    if (cond === "A") {
-      nodes.push(connectingPageNode());
-    }
-
     if (blockIndexWithinCondition === 1) {
       nodes.push(imagePage(cfg.formalIntro));
+    }
+
+    if (cond === "A") {
+      nodes.push(connectingPageNode());
     }
 
     nodes.push({
