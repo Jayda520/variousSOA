@@ -268,7 +268,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
         background:rgb(128,128,128);
         color:#000000;
         font-size:35px;">
-        <span>等待对方连接</span><span id="connecting-dots">.</span>
+        <span>正在与对方连接</span><span id="connecting-dots">.</span>
       </div>
     `;
   }
@@ -722,41 +722,44 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
         blockName
       });
 
-      return {
-        timeline: [
-          ...introPages,
-          {
-            timeline: practiceTrials.flatMap(tv => [
-              makeSingleTrialTimeline(tv),
-              makePracticeFeedbackTrial()
-            ])
-          },
-          {
-            type: jsPsychHtmlKeyboardResponse,
-            stimulus: () => {
-              const rows = jsPsych.data.get().filter({
-                screen: "probe",
-                block: blockName
-              }).last(PRACTICE_TRIALS).values();
+    return {
+  timeline: [
+    ...introPages,
 
-              const acc = rows.length
-                ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
-                : 0;
+    ...(cond === "A" ? [connectingPageNode()] : []),
 
-              if (acc >= PRACTICE_ACC_CRITERION) {
-                markPracticePassed(cond);
-              }
+    {
+      timeline: practiceTrials.flatMap(tv => [
+        makeSingleTrialTimeline(tv),
+        makePracticeFeedbackTrial()
+      ])
+    },
+    {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: () => {
+        const rows = jsPsych.data.get().filter({
+          screen: "probe",
+          block: blockName
+        }).last(PRACTICE_TRIALS).values();
 
-              return `<div style="font-size:1px; color:transparent;"></div>`;
-            },
-            choices: "NO_KEYS",
-            trial_duration: 10,
-            data: {
-              screen: "practice_check"
-            }
-          }
-        ]
-      };
+        const acc = rows.length
+          ? rows.reduce((s, r) => s + (Number(r.acc) || 0), 0) / rows.length
+          : 0;
+
+        if (acc >= PRACTICE_ACC_CRITERION) {
+          markPracticePassed(cond);
+        }
+
+        return `<div style="font-size:1px; color:transparent;"></div>`;
+      },
+      choices: "NO_KEYS",
+      trial_duration: 10,
+      data: {
+        screen: "practice_check"
+      }
+    }
+  ]
+};
     };
 
     return {
