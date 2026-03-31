@@ -20,7 +20,7 @@
   const INTERVAL_MIN = 100;
   const INTERVAL_MAX = 1500;
 
-  // 有代理归因正式 block 前的连接页
+  // fromOthers正式 block 前的连接页
   const CONNECT_MIN = 3000;
   const CONNECT_MAX = 8000;
 
@@ -202,8 +202,8 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
           left:50%;
           top:50%;
           transform:translate(-50%, -50%);
-          color:#000000;
-          font-size:54px;
+          color:#ffffff;
+          font-size:50px;
           line-height:1;
           z-index:1;
           pointer-events:none;
@@ -234,7 +234,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
         justify-content:center;
         background:rgb(128,128,128);
         color:#ffffff;
-        font-size:54px;">+</div>
+        font-size:50px;">+</div>
     `;
   }
 
