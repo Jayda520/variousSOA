@@ -165,47 +165,64 @@
     return Math.round(window.innerHeight * STIM_SIZE_RATIO);
   }
 
-  function makeImageStage(leftSrc = null, rightSrc = null) {
-    const size = getStimSizePx();
+function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
+  const size = getStimSizePx();
 
-    const leftHTML = leftSrc
-      ? `<img src="${leftSrc}" style="
-            position:absolute;
-            left:${POS_L_X * 100}%;
-            top:${POS_Y * 100}%;
-            transform:translate(-50%, -50%);
-            width:${size}px;
-            height:${size}px;
-            object-fit:contain;
-            display:block;
-          ">`
-      : "";
+  const leftHTML = leftSrc
+    ? `<img src="${leftSrc}" style="
+          position:absolute;
+          left:${POS_L_X * 100}%;
+          top:${POS_Y * 100}%;
+          transform:translate(-50%, -50%);
+          width:${size}px;
+          height:${size}px;
+          object-fit:contain;
+          display:block;
+          z-index:2;
+        ">`
+    : "";
 
-    const rightHTML = rightSrc
-      ? `<img src="${rightSrc}" style="
-            position:absolute;
-            left:${POS_R_X * 100}%;
-            top:${POS_Y * 100}%;
-            transform:translate(-50%, -50%);
-            width:${size}px;
-            height:${size}px;
-            object-fit:contain;
-            display:block;
-          ">`
-      : "";
+  const rightHTML = rightSrc
+    ? `<img src="${rightSrc}" style="
+          position:absolute;
+          left:${POS_R_X * 100}%;
+          top:${POS_Y * 100}%;
+          transform:translate(-50%, -50%);
+          width:${size}px;
+          height:${size}px;
+          object-fit:contain;
+          display:block;
+          z-index:2;
+        ">`
+    : "";
 
-    return `
-      <div style="
-        position:relative;
-        width:100vw;
-        height:100vh;
-        background:rgb(128,128,128);
-        overflow:hidden;">
-        ${leftHTML}
-        ${rightHTML}
-      </div>
-    `;
-  }
+  const fixationHTML = showFixation
+    ? `<div style="
+          position:absolute;
+          left:50%;
+          top:50%;
+          transform:translate(-50%, -50%);
+          color:#000000;
+          font-size:54px;
+          line-height:1;
+          z-index:1;
+          pointer-events:none;
+        ">+</div>`
+    : "";
+
+  return `
+    <div style="
+      position:relative;
+      width:100vw;
+      height:100vh;
+      background:rgb(128,128,128);
+      overflow:hidden;">
+      ${fixationHTML}
+      ${leftHTML}
+      ${rightHTML}
+    </div>
+  `;
+}
 
   function makeFixationHTML() {
     return `
