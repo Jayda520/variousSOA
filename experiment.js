@@ -251,7 +251,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
         justify-content:center;
         background:rgb(128,128,128);
         color:#000000;
-        font-size:40px;">
+        font-size:35px;">
         <span>对方正在输入</span><span id="typing-dots">.</span>
       </div>
     `;
@@ -267,7 +267,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
         justify-content:center;
         background:rgb(128,128,128);
         color:#000000;
-        font-size:40px;">
+        font-size:35px;">
         <span>等待对方连接</span><span id="connecting-dots">.</span>
       </div>
     `;
@@ -688,7 +688,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
             justify-content:center;
             background:rgb(128,128,128);
             color:#000000;
-            font-size:40px;
+            font-size:35px;
           ">
             ${isCorrect ? "恭喜你答对了！" : "很遗憾，你答错了！"}
           </div>
