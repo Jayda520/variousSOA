@@ -233,8 +233,8 @@
         align-items:center;
         justify-content:center;
         background:rgb(128,128,128);
-        color:#ffffff;
-        font-size:34px;">
+        color:#000000;
+        font-size:20px;">
         <span>对方正在输入</span><span id="typing-dots">.</span>
       </div>
     `;
@@ -249,8 +249,8 @@
         align-items:center;
         justify-content:center;
         background:rgb(128,128,128);
-        color:#ffffff;
-        font-size:40px;">
+        color:#000000;
+        font-size:20px;">
         <span>等待对方连接</span><span id="connecting-dots">.</span>
       </div>
     `;
@@ -404,7 +404,7 @@
   function getConditionConfig(cond) {
     if (cond === "A") {
       return {
-        label: "agency",
+        label: "fromOthers",
         procedure: INSTRUCTION.procedureA,
         practiceIntro: INSTRUCTION.practiceIntroA,
         formalIntro: INSTRUCTION.formalIntroA,
@@ -413,7 +413,7 @@
       };
     }
     return {
-      label: "noAgency",
+      label: "fromSystem",
       procedure: INSTRUCTION.procedureB,
       practiceIntro: INSTRUCTION.practiceIntroB,
       formalIntro: INSTRUCTION.formalIntroB,
@@ -673,7 +673,7 @@
             color:#ffffff;
             font-size:40px;
           ">
-            ${isCorrect ? "恭喜你答对了！" : "回答错误！"}
+            ${isCorrect ? "恭喜你答对了！" : "很遗憾，你答错了！"}
           </div>
         `;
       },
