@@ -203,7 +203,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
           top:50%;
           transform:translate(-50%, -50%);
           color:#000000;
-          font-size:30px;
+          font-size:40px;
           line-height:1;
           z-index:1;
           pointer-events:none;
@@ -234,7 +234,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
         justify-content:center;
         background:rgb(128,128,128);
         color:#000000;
-        font-size:30px;">+</div>
+        font-size:40px;">+</div>
     `;
   }
 
@@ -251,7 +251,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
         justify-content:center;
         background:rgb(128,128,128);
         color:#000000;
-        font-size:24px;">
+        font-size:35px;">
         <span>对方正在输入</span><span id="typing-dots">.</span>
       </div>
     `;
@@ -267,7 +267,7 @@ function makeImageStage(leftSrc = null, rightSrc = null, showFixation = true) {
         justify-content:center;
         background:rgb(128,128,128);
         color:#000000;
-        font-size:24px;">
+        font-size:35px;">
         <span>等待对方连接</span><span id="connecting-dots">.</span>
       </div>
     `;
